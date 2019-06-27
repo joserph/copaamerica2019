@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\Request;
+use App\Country;
+use App\Http\Requests\CountriesStoreRequest;
 
 class CountryController extends Controller
 {
@@ -13,7 +16,9 @@ class CountryController extends Controller
      */
     public function index()
     {
-        return view('back.countries.index');
+        $countries = Country::orderBy('id', 'DESC')->paginate();
+        //dd($countries);
+        return view('back.countries.index', compact('countries'));
     }
 
     /**
@@ -32,9 +37,20 @@ class CountryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CountriesStoreRequest $request)
     {
-        //
+        $country = Country::create($request->all());
+
+        // IMAGE
+        if($request->file('flag'))
+        {
+            $path = Storage::disk('public')->put('image', $request->file('flag'));
+            //dd($path);
+            $country->fill(['flag' => $path])->save();
+        }
+
+        return redirect()->route('countries.index')
+            ->with('info', 'Entrada creada con exito');
     }
 
     /**

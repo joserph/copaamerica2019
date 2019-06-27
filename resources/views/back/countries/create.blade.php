@@ -12,6 +12,9 @@
                 <div class="panel-body">
                     {!! Form::open(['route' => 'countries.store', 'files' => true]) !!}
                         @include('back.countries.partials.form')
+                        <div class="form-group">
+                            {{ Form::submit('Guardar', ['class' => 'btn btn-sm btn-primary']) }}
+                        </div>
                     {!! Form::close() !!}
                 </div>
             </div>
